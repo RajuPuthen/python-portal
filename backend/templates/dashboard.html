@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ client.name }} dashboard{% endblock %}
+{% block content %}
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-ember">Workspace</p>
+            <h1 class="mt-1 font-display text-4xl font-semibold tracking-tight">{{ client.name }}</h1>
+            <p class="mt-2 text-stone-600">Manage inventory. New uploads wait for admin approval.</p>
+        </div>
+        <a
+            class="inline-flex items-center justify-center rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ember"
+            href="{% url 'product_upload' %}"
+        >
+            Upload product
+        </a>
+    </div>
+
+    <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-stone-500">Inventory</h2>
+    {% if products %}
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for product in products %}
+                {% include '_product_card.html' with show_status=True %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="rounded-2xl border border-dashed border-stone-300 bg-white/60 px-6 py-16 text-center text-stone-500">
+            You have not uploaded any products yet.
+        </div>
+    {% endif %}
+{% endblock %}

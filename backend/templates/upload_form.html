@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Upload product{% endblock %}
+{% block content %}
+    <div class="mx-auto max-w-lg" x-data="{ preview: null, fileName: '' }">
+        <p class="text-sm font-medium uppercase tracking-[0.18em] text-ember">Inventory</p>
+        <h1 class="mt-1 font-display text-4xl font-semibold">Upload product</h1>
+        <p class="mt-2 mb-8 text-stone-600">Submissions start as pending until an admin approves them.</p>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            class="space-y-5 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            hx-boost="true"
+            hx-encoding="multipart/form-data"
+            hx-indicator="#upload-spinner"
+        >
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-medium text-stone-700" for="id_name">Product name</label>
+                <input
+                    id="id_name"
+                    type="text"
+                    name="name"
+                    required
+                    class="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-ink shadow-sm focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember/30"
+                >
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-stone-700" for="id_price">Price ($)</label>
+                <input
+                    id="id_price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    name="price"
+                    required
+                    class="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-ink shadow-sm focus:border-ember focus:outline-none focus:ring-2 focus:ring-ember/30"
+                >
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-stone-700" for="id_image">Product image</label>
+                <input
+                    id="id_image"
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    required
+                    class="mt-1 block w-full text-sm text-stone-600 file:mr-4 file:rounded-full file:border-0 file:bg-stone-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-ink hover:file:bg-stone-200"
+                    @change="preview = URL.createObjectURL($event.target.files[0]); fileName = $event.target.files[0].name"
+                >
+                <p class="mt-1 text-xs text-stone-500" x-show="fileName" x-text="fileName"></p>
+                <img
+                    x-show="preview"
+                    x-cloak
+                    :src="preview"
+                    alt="Preview"
+                    class="mt-4 h-40 w-full rounded-xl object-cover"
+                >
+            </div>
+            <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ember"
+            >
+                Submit for verification
+                <span class="htmx-indicator ml-2" id="upload-spinner">…</span>
+            </button>
+        </form>
+    </div>
+{% endblock %}

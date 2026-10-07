@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{% if client %}{{ client.name }}{% else %}Featured products{% endif %}{% endblock %}
+{% block content %}
+    <div class="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-ember">
+                {% if client %}Storefront{% else %}Marketplace{% endif %}
+            </p>
+            <h1 class="mt-1 font-display text-4xl font-semibold tracking-tight">
+                {% if client %}{{ client.name }}{% else %}All featured products{% endif %}
+            </h1>
+            <p class="mt-2 max-w-xl text-stone-600">
+                {% if client %}
+                    Approved items from this company store.
+                {% else %}
+                    Browse products approved for the public catalog.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    {% if products %}
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for product in products %}
+                {% include '_product_card.html' with show_seller=True %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="rounded-2xl border border-dashed border-stone-300 bg-white/60 px-6 py-16 text-center text-stone-500">
+            No products are currently available.
+        </div>
+    {% endif %}
+{% endblock %}

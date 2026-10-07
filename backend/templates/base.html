@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Marketplace{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ["Fraunces", "Georgia", "serif"],
+                        sans: ["Source Sans 3", "system-ui", "sans-serif"],
+                    },
+                    colors: {
+                        ink: "#1c1917",
+                        paper: "#f6f1e8",
+                        ember: "#c2410c",
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body
+    class="min-h-screen bg-paper font-sans text-ink antialiased"
+    hx-boost="true"
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+>
+    <header
+        class="sticky top-0 z-20 border-b border-stone-200/80 bg-paper/90 backdrop-blur"
+        x-data="{ open: false }"
+    >
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+            <a href="{% url 'global_catalog' %}" class="font-display text-xl font-semibold tracking-tight">
+                Marketplace
+            </a>
+            <button
+                type="button"
+                class="inline-flex rounded-md p-2 text-stone-700 hover:bg-stone-200 md:hidden"
+                @click="open = !open"
+                :aria-expanded="open.toString()"
+                aria-label="Toggle navigation"
+            >
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16M4 12h16M4 17h16"/>
+                </svg>
+            </button>
+            <nav
+                class="hidden items-center gap-6 text-sm font-medium md:flex"
+            >
+                <a class="text-stone-700 hover:text-ember" href="{% url 'global_catalog' %}">Storefront</a>
+                {% if user.is_authenticated %}
+                    <a class="text-stone-700 hover:text-ember" href="{% url 'dashboard' %}">Dashboard</a>
+                    <form method="post" action="{% url 'logout' %}" hx-boost="false">
+                        {% csrf_token %}
+                        <button type="submit" class="text-stone-700 hover:text-ember">
+                            Log out <span class="text-stone-400">({{ user.username }})</span>
+                        </button>
+                    </form>
+                {% else %}
+                    <a class="text-stone-700 hover:text-ember" href="{% url 'login' %}">Log in</a>
+                    <a class="rounded-full bg-ink px-4 py-2 text-white hover:bg-ember" href="{% url 'register' %}">Register company</a>
+                {% endif %}
+            </nav>
+        </div>
+        <nav
+            class="space-y-2 border-t border-stone-200 px-4 py-4 text-sm font-medium md:hidden"
+            x-show="open"
+            x-cloak
+            x-transition
+        >
+            <a class="block py-1 text-stone-700" href="{% url 'global_catalog' %}">Storefront</a>
+            {% if user.is_authenticated %}
+                <a class="block py-1 text-stone-700" href="{% url 'dashboard' %}">Dashboard</a>
+                <form method="post" action="{% url 'logout' %}" hx-boost="false">
+                    {% csrf_token %}
+                    <button type="submit" class="py-1 text-stone-700">Log out ({{ user.username }})</button>
+                </form>
+            {% else %}
+                <a class="block py-1 text-stone-700" href="{% url 'login' %}">Log in</a>
+                <a class="block py-1 font-semibold text-ember" href="{% url 'register' %}">Register company</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        {% block content %}{% endblock %}
+    </main>
+    <style>
+        [x-cloak] { display: none !important; }
+        .htmx-indicator { display: none; }
+        .htmx-request .htmx-indicator { display: inline; }
+        .htmx-request.htmx-indicator { display: inline; }
+    </style>
+</body>
+</html>
