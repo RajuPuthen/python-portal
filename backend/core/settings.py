@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,14 +51,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-# 1. Fallback to your local docker setup if DATABASE_URL doesn't exist
-DEFAULT_DB_URL = "postgresql://python_portal_user:lbvFJUqOgJZAzH1Muow8uQCp4GCjD0Rm@dpg-db34sr67bikc73bm8vtg-a/python_portal"
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', DEFAULT_DB_URL),
-        conn_max_age=600
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_DB", "marketplace_db"),
+        "USER": os.environ.get("POSTGRES_USER", "postgres_user"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "securepassword123"),
+        "HOST": os.environ.get("DB_HOST", "db"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
